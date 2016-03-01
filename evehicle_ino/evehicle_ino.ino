@@ -1,4 +1,27 @@
 //The RUFF RIDERS Electric Vehicle Team
+/*                           ;\ 
+                            |' \ 
+         _                  ; : ; 
+        / `-.              /: : | 
+       |  ,-.`-.          ,': : | 
+       \  :  `. `.       ,'-. : | 
+        \ ;    ;  `-.__,'    `-.| 
+         \ ;   ;  :::  ,::'`:.  `. 
+          \ `-. :  `    :.    `.  \ 
+           \   \    ,   ;   ,:    (\ 
+            \   :., :.    ,'o)): ` `-. 
+           ,/,' ;' ,::"'`.`---'   `.  `-._ 
+         ,/  :  ; '"      `;'          ,--`. 
+        ;/   :; ;             ,:'     (   ,:)     
+          ,.,:.    ; ,:.,  ,-._ `.     \""'/ 
+          '::'     `:'`  ,'(  \`._____.-'"' 
+             ;,   ;  `.  `. `._`-.  \\ 
+             ;:.  ;:       `-._`-.\  \`. 
+              '`:. :        |' `. `\  ) \ 
+                 ` ;:       |    `--\__,' 
+                   '`      ,' 
+                       ,-' 
+*/
 
 //Imports 
 #include <Servo.h>
@@ -6,15 +29,16 @@
 //Set port numbers for I/O 
 int pedalPot = 0;
 int victorPort = 3;
-int btnReverse = 2;
-int btnNeutral = 3;
-int btnDrive = 4;
+int btnReverse = 4;
+int btnNeutral = 5;
+int btnDrive = 6;
+int btnReset = 7;
 int ledReverse = 9;
 int ledNeutral = 10;
 int ledDrive = 11;
 
-int minPotRange = 0;
-int maxPotRange = 200;
+int minPotRange = 90;
+int maxPotRange = 180;
 
 //Start the vehicle in neutral (for safety reasons)
 boolean drive = false;
@@ -35,7 +59,7 @@ void loop(){
     neutral = false;
     reverse = false;
     if(drive && pedalVal >= 10){
-      writeVal = pedalVal * 0.5 + 90; //Fix this. Currently, this will cause the car to run in reverse... yikes!
+      writeVal = pedalVal;
       if(writeVal <= 180){ //Failsafe. Prevents program from crashing if value is greater than 180
         victor.write(writeVal);
       }
@@ -53,8 +77,14 @@ void loop(){
       drive = false;
       neutral = false;
       if(reverse && pedalVal >= 10){
-       writeVal = pedalVal; 
-       victor.write(writeVal);;
+       writeVal = pedalVal - 180;
+       writeVal = abs(writeVal); 
+       victor.write(writeVal);
       }  
+    }
+    if(btnReset == HIGH){
+      reverse = false;
+      drive = false;
+      neutral = true; 
     }
 }
