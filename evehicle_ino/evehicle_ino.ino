@@ -37,7 +37,11 @@ int ledReverse = 9;
 int ledNeutral = 10;
 int ledDrive = 11;
 
-int minPotRange = 90;
+//Deadzone value for the pedal
+int deadzone = 10; 
+
+//Range values for potentiometer mapping
+int minPotRange =90;
 int maxPotRange = 180;
 
 //Start the vehicle in neutral (for safety reasons)
@@ -58,7 +62,7 @@ void loop(){
     drive = true;
     neutral = false;
     reverse = false;
-    if(drive && pedalVal >= 10){
+    if(drive && pedalVal >= deadzone){
       writeVal = pedalVal;
       if(writeVal <= 180){ //Failsafe. Prevents program from crashing if value is greater than 180
         victor.write(writeVal);
@@ -76,7 +80,7 @@ void loop(){
       reverse = true;
       drive = false;
       neutral = false;
-      if(reverse && pedalVal >= 10){
+      if(reverse && pedalVal >= deadzone){
        writeVal = pedalVal - 180;
        writeVal = abs(writeVal); 
        victor.write(writeVal);
