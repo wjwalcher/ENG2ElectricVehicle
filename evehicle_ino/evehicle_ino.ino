@@ -36,6 +36,16 @@ int btnReset = 7;
 int ledReverse = 9;
 int ledNeutral = 10;
 int ledDrive = 11;
+int brakeLightOne = 12;
+int brakeLightTwo = 13;
+int turnSignalOne = A5;
+int turnSignalTwo = A6;
+
+//Clean up this shit later 
+int tsUno = 0;
+int pedalVal;
+int writeVal;
+bool ts1IsOn = false;
 
 //Deadzone value for the pedal
 int deadzone = 10; 
@@ -52,11 +62,25 @@ boolean reverse = false;
 Servo victor;
 
 void setup(){
+  pinMode(brakeLightOne, OUTPUT);
   victor.attach(victorPort);
 }
 
 void loop(){
-  pedalVal = pedalPot.analogRead(pedalPot);
+  //The Code between these two arrows (> <) has issues that need to be fixed. START >
+  tsUno = analogRead(turnSignalOne);
+  if(tsUno == HIGH){
+    ts1IsOn = true;
+  }
+  if(ts1IsOn){
+    digitalWrite(brakeLightOne, HIGH);
+    delay(350);
+    digitalWrite(brakeLightOne, LOW);
+    delay(350);
+  }
+  // < END
+  
+  pedalVal = analogRead(pedalPot);
   pedalVal = map(pedalVal, 0, 1023, minPotRange, maxPotRange);
   if(btnDrive == HIGH){
     drive = true;
@@ -91,4 +115,5 @@ void loop(){
       drive = false;
       neutral = true; 
     }
+  }
 }
